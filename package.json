@@ -1,0 +1,22 @@
+{
+  "name": "reportes",
+  "version": "1.0.0",
+  "main": "rechazados.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "adm-zip": "^0.5.10",
+    "dependecy": "^0.0.2",
+    "dotenv": "^16.3.1",
+    "exceljs": "^4.3.0",
+    "moment-timezone": "^0.5.43",
+    "mongodb": "6.1",
+    "nodemailer": "^6.9.4"
+  }
+}
