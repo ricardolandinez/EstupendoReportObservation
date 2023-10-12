@@ -139,6 +139,8 @@ const generarRechazados = (data) => {
         });
 
 }
+
+// recepcion observaciones
 function adjustToColombiaTime(date) {
     if (!date) return null;
     const offset = -5; // Colombia UTC -5:00
@@ -156,14 +158,11 @@ const formatHistorial = (historial) => {
         }).join(' || ');
 }
 
-
-
-
 const formatToBogotaDate = (date) => {
     return moment(date).tz('America/Bogota').format('YYYY-MM-DD HH:mm:ss');
 };
 
-// recepcion observaciones
+
 const generarRecepcionPerenco = (data) => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Reporte');
@@ -178,6 +177,7 @@ const generarRecepcionPerenco = (data) => {
         'TipoPago',
         'NumeralDocumento',
         'DocumentoReferenciado',
+        'Subtotal',
         'ValorTotal',
         "Workflow",
         "Usuarios",
@@ -198,6 +198,7 @@ const generarRecepcionPerenco = (data) => {
             TipoPago: document.formaPago,
             NumeralDocumento: document.numeral,
             DocumentoReferenciado: document.documentRef,
+            SubTotal: document.sub_total,
             ValorTotal: document.valor_total,
             Workflow: document.workflowTitulo,
             Usuarios: document.usuarios,
@@ -221,6 +222,7 @@ const generarRecepcionPerenco = (data) => {
                 item.TipoPago,
                 item.NumeralDocumento,
                 item.DocumentoReferenciado,
+                item.SubTotal,
                 item.ValorTotal,
                 item.Workflow,
                 item.Usuarios,
@@ -242,7 +244,36 @@ const generarRecepcionPerenco = (data) => {
         });
 
 }
-export { generarAutorizados, generarEventos, generarNomina, generarRecepcion, generarRechazados, generarRecepcionPerenco, formatHistorial };
+//Bodytech
+const generarEmpresasBodytech = (data) => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Reporte');
+
+
+    worksheet.addRow(['Razón Social', 'NIT', 'Total Documentos autorizados']);
+
+    data = data.map(document => {
+        return {
+            razon_social: document.razon_social,
+            nit: document.nit,
+            totalDocumentos_autorizados: document.totalDocumentos_autorizados || 0
+     }
+    }).forEach(item => {
+        worksheet.addRow([item.razon_social, item.nit, item.totalDocumentos_autorizados]);
+    });
+
+
+    const filename = 'Reporte_documentos_autorizados_emision_EmpresasBodytech.xlsx';
+    workbook.xlsx.writeFile(filename)
+        .then(() => {
+            console.log(`Reporte generado exitosamente en ${filename}`);
+        })
+        .catch(error => {
+            console.error('Error al generar el reporte:', error);
+        });
+
+}
+export { generarAutorizados, generarEventos, generarNomina, generarRecepcion, generarRechazados, generarRecepcionPerenco, formatHistorial, generarEmpresasBodytech };
 
 
 

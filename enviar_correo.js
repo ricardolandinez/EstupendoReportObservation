@@ -1,15 +1,14 @@
-import { send } from 'process';
+import nodemailer from 'nodemailer';
+import AdmZip from 'adm-zip';
+import fs from 'fs';
 
-const nodemailer = require('nodemailer');
-const AdmZip = require('adm-zip');
-const fs = require('fs');
 
 function sendEmail() {
     const transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
             user: 'ricardo.landinez@estupendo.com.co',
-            pass: 'Lotto0804'
+            pass: 'Terry040804'
         }
     });
 
@@ -17,11 +16,11 @@ function sendEmail() {
     const zipFilePath = './Reporte_Estupendo.zip'; // Cambiar la ruta y nombre del archivo .zip
 
     const filesToCompress = [
-        './Reporte_eventos.xlsx', // Cambiar las rutas a los documentos que deseas comprimir
-        './Reporte_documentos_autorizados_emision.xlsx',
-        './Reporte_documentos_autorizados_nomina.xlsx',
-        './Reporte_documentos_rechazados_emision.xlsx',
-        './Reporte_documentos_recepcionados.xlsx'
+        './Reporte_documentos_autorizados_emision_EmpresasBodytech.xlsx', // Cambiar las rutas a los documentos que deseas comprimir
+        // './Reporte_documentos_autorizados_emision.xlsx',
+        // './Reporte_documentos_autorizados_nomina.xlsx',
+        // './Reporte_documentos_rechazados_emision.xlsx',
+        // './Reporte_documentos_recepcionados.xlsx'
     ];
 
     filesToCompress.forEach(filePath => {
@@ -38,11 +37,21 @@ function sendEmail() {
 
     const mailOptions = {
         from: 'ricardo.landinez@estupendo.com.co',
-        to: 'mreyeswilson@gmail.com', // Cambia el correo de destino
+        to: 'ismary.lara@estupendo.com.co', // Cambia el correo de destino
       //cc: 'correo.en.copia@example.com', 
-      //bcc: 'correo.en.copia.oculta@example.com',
-        subject: 'Reporte documentos electronicos Estupendo',
-        text: 'Buen día estimado equipo de Estupendo,Reciban un cordial saludo.Tal como han venido conociendo, este correo se generará al finalizar cada mes.Precisamente, en el primer día de cada mes, se enviará un reporte correspondiente al mes anterior.Esto significa que, si hoy es 1 de septiembre, este mensaje incluirá un reporte detallado de todo el mes de agosto.En el archivo comprimido(.zip) adjunto, encontrarán cinco informes, cuyo nombre identificará claramente su contenido y referencia.Aprovechamos para resaltar que si tienen algún comentario o sugerencia relacionada con este mensaje automático y preestablecido, les agradeceríamos hacérnoslo saber. Saludos cordiales',
+        bcc: 'soporte.stupendo@estupendo.com.co',
+        subject: 'Reporte documentos emitidos y autorizados por empresas Bodytech',
+        html: `
+        Buen día estimado equipo de Estupendo,<br><br>
+        Reciban un cordial saludo. Este mensaje automático tiene como propósito reportar, de manera quincenal, los documentos emitidos y autorizados por las empresas asociadas a BODYTECH, detalladas a continuación:<br><br>
+        - INVERDESA COMERCIAL S.A.S   NIT 900018477<br>
+        - INVERSIONES EN RECREACION DEPORTE Y SALUD S.A.   NIT 830033206<br>
+        - INCITEDIGITAL S.A.S NIT 901361991<br>
+        - FITNESS MARKET SAS  NIT 830080000<br><br>
+        Es relevante mencionar que si alguna de estas empresas no aparece reflejada en el reporte, se debe a que el número de documentos es igual a 0, lo que indica que no se emitieron documentos durante ese período de 15 días.<br><br>
+        <strong>Por favor, NO responder a este mensaje, ya que se ha generado automáticamente</strong>.<br><br>
+        Saludos cordiales.
+    `,
         attachments: [
             {
                 filename: 'Reporte_electronico.zip',

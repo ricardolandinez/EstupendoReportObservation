@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 import generarReporte from "./generador.js";
-import { generarAutorizados, generarEventos, generarNomina, generarRecepcion, generarRecepcionPerenco, generarRechazados, formatHistorial  } from "./callbacks.js";
+import { generarAutorizados, generarEventos, generarNomina, generarRecepcion, generarRecepcionPerenco, generarRechazados, formatHistorial, generarEmpresasBodytech  } from "./callbacks.js";
+import { ObjectId } from 'mongodb';
 
 dotenv.config()
-
 
 const query = [{
     $match: {
@@ -233,8 +233,8 @@ const recepcionadosPerencos = [
         $match: {
             receptor_id: "5d780d6900679c1ffc549f8e",
             created_at: {
-                $gte: new Date("2023-07-01T00:00:00-05:00"),
-                $lte: new Date("2023-10-03T23:59:59-05:00")
+                $gte: new Date("2023-10-10T00:00:00-05:00"),
+                $lte: new Date("2023-10-10T23:59:59-05:00")
             }
         }
     },
@@ -413,6 +413,7 @@ const recepcionadosPerencos = [
             razon_social_emisor: { $first: "$emisorInfo.nombre_identificacion" },
             emisor_id: { $first: "$emisor_id" },
             numeral: { $first: "$numeral" },
+            sub_total: { $first: "$sub_total"},
             valor_total: { $first: "$valor_total" },
             created_at: { $first: "$created_at" },
             fecha_emision: { $first: "$fecha_emision" },
@@ -472,6 +473,7 @@ const recepcionadosPerencos = [
             razon_social_emisor: 1,
             emisor_id: 1,
             numeral: 1,
+            sub_total: 1,
             valor_total: 1,
             created_at: 1,
             fecha_emision: 1,
@@ -515,7 +517,67 @@ const recepcionadosPerencos = [
     
         }
     }
-]
+];
+
+
+const empresaBodytech = [
+    {
+        $match: {
+            estado: 2,
+            created_at: {
+                $gte: new Date("2023-10-01T00:00:00-05:00"),
+                $lte: new Date("2023-10-15T23:59:59-05:00")
+            }
+        }
+    },
+    {
+        $addFields: {
+            emisorObjectId: { $toObjectId: "$emisor_id" }
+        }
+    },
+    {
+        $lookup: {
+            from: "clientes",
+            localField: "emisorObjectId",
+            foreignField: "_id",
+            as: "clienteInfo"
+        }
+    },
+    {
+        $unwind: {
+            path: "$clienteInfo",
+            preserveNullAndEmptyArrays: true  // Preserva los documentos sin coincidencias
+        }
+    },
+    {
+        $group: {
+            _id: "$emisorObjectId",
+            razon_social: { $first: "$clienteInfo.nombre_identificacion" },
+            nit: { $first: "$clienteInfo.identificacion" },
+            totalDocumentos_autorizados: { $sum: 1 }
+        }
+    },
+    {
+        $match: {
+            _id: {
+                $in: [
+                   new ObjectId("5dc19bbb745ded0e54558bf8"), //Bodytech
+                   new ObjectId("5daa37133d260c05363220ea"), //Inverdesa
+                   new ObjectId("613b8a03d21eb0313d246f4d"), //incite
+                   new ObjectId("5db32e17aa46a10537614676") //fitnesMarket
+                ]
+            }
+        }
+    },
+    {
+        $sort: {
+            totalDocumentos_autorizados: -1
+        }
+    }
+];
+
+// ... el resto de tu código
+
 
 // generarReporte(query, "documentos",generarAutorizados )
 // generarReporte(eventos, "clientes", generarEventos)
@@ -523,8 +585,8 @@ const recepcionadosPerencos = [
 // generarReporte(recepcion, "documentos_rec", generarRecepcion)
 // generarReporte(rechazados, "documentos", generarRechazados)
 
-generarReporte(recepcionadosPerencos, "documentos_rec", generarRecepcionPerenco)
-
+// generarReporte(recepcionadosPerencos, "documentos_rec", generarRecepcionPerenco)
+ generarReporte(empresaBodytech, "documentos", generarEmpresasBodytech )
 
 
 
