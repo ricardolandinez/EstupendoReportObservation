@@ -40,7 +40,7 @@ function sendEmail() {
         to: 'ismary.lara@estupendo.com.co', // Cambia el correo de destino
       //cc: 'correo.en.copia@example.com', 
         bcc: 'soporte.stupendo@estupendo.com.co',
-        subject: 'Reporte documentos emitidos y autorizados por empresas Bodytech',
+        subject: 'Reporte documentos emitidos y autorizados por el grupo Bodytech',
         html: `
         Buen día estimado equipo de Estupendo,<br><br>
         Reciban un cordial saludo. Este mensaje automático tiene como propósito reportar, de manera quincenal, los documentos emitidos y autorizados por las empresas asociadas a BODYTECH, detalladas a continuación:<br><br>

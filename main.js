@@ -231,10 +231,10 @@ const rechazados = [
 const recepcionadosPerencos = [
     {
         $match: {
-            receptor_id: "5d780d6900679c1ffc549f8e",
+            receptor_id: "5defb2c559924b4c589954ef",
             created_at: {
-                $gte: new Date("2023-10-10T00:00:00-05:00"),
-                $lte: new Date("2023-10-10T23:59:59-05:00")
+                $gte: new Date("2023-09-01T00:00:00-05:00"),
+                $lte: new Date("2023-10-13T23:59:59-05:00")
             }
         }
     },

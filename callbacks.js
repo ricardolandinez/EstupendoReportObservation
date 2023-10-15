@@ -234,7 +234,7 @@ const generarRecepcionPerenco = (data) => {
         );
     })
 
-    const filename = 'Reporte_documentos_recepcionados_Observaciones_SBS_JULIO-OCTUBRE.xlsx';
+    const filename = 'Reporte_documentos_recepcionados_Observaciones_PerencoOilAndGas_SEPTIEMBRE-OCTUBRE.xlsx';
     workbook.xlsx.writeFile(filename)
         .then(() => {
             console.log(`Reporte generado exitosamente en ${filename}`);
