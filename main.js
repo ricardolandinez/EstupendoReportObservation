@@ -1,52 +1,75 @@
 import dotenv from "dotenv";
 import generarReporte from "./generador.js";
-import { generarAutorizados, generarEventos, generarNomina, generarRecepcion, generarRecepcionPerenco, generarRechazados, formatHistorial, generarEmpresasBodytech  } from "./callbacks.js";
+import { generarAutorizados, generarEventos, generarNomina, generarRecepcion, generarRecepcionPerenco, generarRechazados, formatHistorial, generarEmpresasBodytech, adquirentesSinEventos  } from "./callbacks.js";
 import { ObjectId } from 'mongodb';
 
 dotenv.config()
 
-const query = [{
-    $match: {
-        estado: 2,
-        created_at: {
-            $gte: new Date("2023-09-01T00:00:00Z"),
-            $lt: new Date("2023-09-30T23:59:59Z")
+const query = [
+    {
+        $match: {
+            tipo_documento: "01",
+            formaPago: "2",
+            created_at: {
+                $gte: new Date("2022-07-13T00:00:00-05:00"),
+                $lte: new Date("2023-10-26T23:59:59-05:00")
+            }
+        }
+    },
+    {
+        $addFields: {
+            emisorObjectId: { $toObjectId: "$emisor_id" }
+        }
+    },
+    {
+        $group: {
+            _id: "$emisorObjectId",
+            totalDocumentos_autorizados: {
+                $sum: { $cond: [{ $eq: ["$estado", 2] }, 1, 0] }
+            },
+            totalDocumentos_sinEventos: {
+                $sum: {
+                    $cond: [
+                        {
+                            $and: [
+                                { $eq: ["$estado", 2] },
+                                { $eq: ["$acuse_recibo", false] },
+                                { $eq: ["$reclamo", false] },
+                                { $eq: ["$recibo_bien_servicio", false] },
+                                { $eq: ["$aceptacion", false] },
+                                { $eq: ["$aceptacion_tacita", false] },
+                                { $eq: ["$titulo_valor", false] }
+                            ]
+                        },
+                        1,
+                        0
+                    ]
+                }
+            }
+        }
+    },
+    {
+        $sort: {
+            totalDocumentos_autorizados: -1
+        }
+    },
+    {
+        $lookup: {
+            from: "clientes",
+            localField: "_id",
+            foreignField: "_id",
+            as: "clienteInfo"
+        }
+    },
+    {
+        $project: {
+            razon_social: { $arrayElemAt: ["$clienteInfo.nombre_identificacion", 0] },
+            nit: { $arrayElemAt: ["$clienteInfo.identificacion", 0] },
+            totalDocumentos_autorizados: 1,
+            totalDocumentos_sinEventos: 1
         }
     }
-},
-{
-    $addFields: {
-        emisorObjectId: { $toObjectId: "$emisor_id" }
-    }
-},
-{
-    $group: {
-        _id: "$emisorObjectId",
-        totalDocumentos_rechazado: { $sum: 1 }
-    }
-},
-{
-    $sort: {
-        totalDocumentos_rechazado: -1
-    }
-},
-{
-    $lookup: {
-        from: "clientes",
-        localField: "_id",
-        foreignField: "_id",
-        as: "clienteInfo"
-    }
-},
-
-{
-    $project: {
-        _id: 0,
-        razon_social: { $arrayElemAt: ["$clienteInfo.nombre_identificacion", 0] },
-        nit: { $arrayElemAt: ["$clienteInfo.identificacion", 0] },
-        totalDocumentos_autorizados: "$totalDocumentos_rechazado"
-    }
-}]
+]
 
 const eventos = [{
     $match: {
@@ -231,10 +254,10 @@ const rechazados = [
 const recepcionadosPerencos = [
     {
         $match: {
-            receptor_id: "5defb2c559924b4c589954ef",
+            receptor_id: "5defc82b6cddfb088916a6f1",
             created_at: {
-                $gte: new Date("2023-09-01T00:00:00-05:00"),
-                $lte: new Date("2023-10-13T23:59:59-05:00")
+                $gte: new Date("2022-07-13T00:00:00-05:00"),
+                $lte: new Date("2023-10-25T23:59:59-05:00")
             }
         }
     },
@@ -525,8 +548,8 @@ const empresaBodytech = [
         $match: {
             estado: 2,
             created_at: {
-                $gte: new Date("2023-10-01T00:00:00-05:00"),
-                $lte: new Date("2023-10-15T23:59:59-05:00")
+                $gte: new Date("2022-07-13T00:00:00-05:00"),
+                $lte: new Date("2023-10-17T23:59:59-05:00")
             }
         }
     },
@@ -574,9 +597,72 @@ const empresaBodytech = [
             totalDocumentos_autorizados: -1
         }
     }
-];
+]
 
-// ... el resto de tu código
+const adquirenteNoEventos = [
+    {
+        $match: {
+            tipo_documento: "01",
+            formaPago: "2",
+            estado: 2,
+            acuse_recibo: false,
+            emisor_id:"5da90b8c8b763f04f4001bc3",
+            created_at: {
+                $gte: new Date("2022-07-13T00:00:00-05:00"),
+                $lte: new Date("2023-10-27T23:59:59-05:00")
+            }
+        }
+    },
+    {
+        $addFields: {
+            receptorObjectId: { $toObjectId: "$receptor_id" }
+        }
+    },
+{
+        $lookup: {
+            from: "clientes",
+            localField: "receptorObjectId", 
+            foreignField: "_id",       
+            as: "clienteInfo"
+        }
+    },
+        {
+        $unwind: "$clienteInfo"
+    },
+    {
+        $group: {
+            _id: "$clienteInfo._id",
+            razon_social: { $first: "$clienteInfo.nombre_identificacion" },
+            nombre_comercial: { $first: "$clienteInfo.nombre_comercial" },
+            nit: { $first: "$clienteInfo.identificacion" },
+            email: { $first: "$clienteInfo.email" },
+            telefono: { $first: "$clienteInfo.telefono" },
+            municipio: { $first: "$clienteInfo.municipio" },
+            direccion: { $first: "$clienteInfo.dir_matriz" },
+            documentosSinEventos: { $sum: 1 }
+        }
+    },
+        {
+        $sort: {
+            documentosSinEventos: -1
+        }
+    },
+    { $limit: 3 },
+
+{
+        $project: {
+            _id: 0,
+            razon_social: 1,
+            nombre_comercial: 1,
+            nit: 1,
+            email: 1,
+            telefono: 1,
+            municipio: 1,
+            direccion: 1,
+            documentosSinEventos: 1
+        }
+    }
+]
 
 
 // generarReporte(query, "documentos",generarAutorizados )
@@ -586,7 +672,8 @@ const empresaBodytech = [
 // generarReporte(rechazados, "documentos", generarRechazados)
 
 // generarReporte(recepcionadosPerencos, "documentos_rec", generarRecepcionPerenco)
- generarReporte(empresaBodytech, "documentos", generarEmpresasBodytech )
+//  generarReporte(empresaBodytech, "documentos", generarEmpresasBodytech )
+generarReporte(adquirenteNoEventos, "documentos", adquirentesSinEventos )
 
 
 

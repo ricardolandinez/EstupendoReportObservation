@@ -7,11 +7,11 @@ const generarAutorizados = (data) => {
     const worksheet = workbook.addWorksheet('Reporte');
 
 
-    worksheet.addRow(['Razón Social', 'NIT', 'Total Documentos autorizados']);
+    worksheet.addRow(['Razón Social', 'NIT', 'Total Documentos autorizados', 'Total Documentos Sin eventos']);
 
 
     data.forEach(item => {
-        worksheet.addRow([item.razon_social, item.nit, item.totalDocumentos_autorizados]);
+        worksheet.addRow([item.razon_social, item.nit, item.totalDocumentos_autorizados, item.totalDocumentos_sinEventos]);
     });
 
 
@@ -273,7 +273,42 @@ const generarEmpresasBodytech = (data) => {
         });
 
 }
-export { generarAutorizados, generarEventos, generarNomina, generarRecepcion, generarRechazados, generarRecepcionPerenco, formatHistorial, generarEmpresasBodytech };
+//Adquirentes sin eventos 
+const adquirentesSinEventos = (data) => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Reporte');
+
+
+    worksheet.addRow(['Razón Social','Nombre Comercial', 'NIT','Email','Telefono','Ciudad','Direccion','Total Documentos autorizados Sin Eventos']);
+
+    data = data.map(document => {
+        return {
+            razon_social: document.razon_social,
+            nombre_comercial: document.nombre_comercial,
+            nit: document.nit,
+            email: document.email,
+            telefono: document.telefono ,
+            municipio: document.municipio,
+            direccion: document.direccion,
+            documentosSinEventos: document.documentosSinEventos,
+     }
+    }).forEach(item => {
+        worksheet.addRow([item.razon_social,item.nombre_comercial, item.nit, item.email,item.telefono,item.municipio,item.direccion,item.documentosSinEventos]);
+    });
+
+
+    const filename = 'Reporte_documentos_autorizados_sin_eventos.xlsx';
+    workbook.xlsx.writeFile(filename)
+        .then(() => {
+            console.log(`Reporte generado exitosamente en ${filename}`);
+        })
+        .catch(error => {
+            console.error('Error al generar el reporte:', error);
+        });
+
+}
+
+export { generarAutorizados, generarEventos, generarNomina, generarRecepcion, generarRechazados, generarRecepcionPerenco, formatHistorial, generarEmpresasBodytech,adquirentesSinEventos };
 
 
 
