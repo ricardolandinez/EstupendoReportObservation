@@ -254,10 +254,10 @@ const rechazados = [
 const recepcionadosPerencos = [
     {
         $match: {
-            receptor_id: "5defc82b6cddfb088916a6f1",
+            receptor_id: "5d97320c00679c041c41cfb7",
             created_at: {
-                $gte: new Date("2022-07-13T00:00:00-05:00"),
-                $lte: new Date("2023-10-25T23:59:59-05:00")
+                $gte: new Date("2023-07-01T00:00:00-05:00"),
+                $lte: new Date("2023-10-30T23:59:59-05:00")
             }
         }
     },
@@ -548,8 +548,8 @@ const empresaBodytech = [
         $match: {
             estado: 2,
             created_at: {
-                $gte: new Date("2022-07-13T00:00:00-05:00"),
-                $lte: new Date("2023-10-17T23:59:59-05:00")
+                $gte: new Date("2023-10-15T00:00:00-05:00"),
+                $lte: new Date("2023-10-31T23:59:59-05:00")
             }
         }
     },
@@ -606,9 +606,9 @@ const adquirenteNoEventos = [
             formaPago: "2",
             estado: 2,
             acuse_recibo: false,
-            emisor_id:"5da90b8c8b763f04f4001bc3",
+            emisor_id:"5dc19bbb745ded0e54558bf8",
             created_at: {
-                $gte: new Date("2022-07-13T00:00:00-05:00"),
+                $gte: new Date("2023-01-01T00:00:00-05:00"),
                 $lte: new Date("2023-10-27T23:59:59-05:00")
             }
         }
@@ -672,8 +672,8 @@ const adquirenteNoEventos = [
 // generarReporte(rechazados, "documentos", generarRechazados)
 
 // generarReporte(recepcionadosPerencos, "documentos_rec", generarRecepcionPerenco)
-//  generarReporte(empresaBodytech, "documentos", generarEmpresasBodytech )
-generarReporte(adquirenteNoEventos, "documentos", adquirentesSinEventos )
+ generarReporte(empresaBodytech, "documentos", generarEmpresasBodytech )
+// generarReporte(adquirenteNoEventos, "documentos", adquirentesSinEventos )
 
 
 

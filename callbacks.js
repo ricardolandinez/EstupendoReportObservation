@@ -283,14 +283,14 @@ const adquirentesSinEventos = (data) => {
 
     data = data.map(document => {
         return {
-            razon_social: document.razon_social,
-            nombre_comercial: document.nombre_comercial,
-            nit: document.nit,
-            email: document.email,
-            telefono: document.telefono ,
-            municipio: document.municipio,
-            direccion: document.direccion,
-            documentosSinEventos: document.documentosSinEventos,
+            razon_social: document.razon_social || "",
+            nombre_comercial: document.nombre_comercial || "",
+            nit: document.nit || "",
+            email: document.email || "",
+            telefono: document.telefono || "",
+            municipio: document.municipio || "",
+            direccion: document.direccion || "",
+            documentosSinEventos: document.documentosSinEventos || "",
      }
     }).forEach(item => {
         worksheet.addRow([item.razon_social,item.nombre_comercial, item.nit, item.email,item.telefono,item.municipio,item.direccion,item.documentosSinEventos]);

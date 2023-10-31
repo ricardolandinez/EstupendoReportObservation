@@ -38,8 +38,8 @@ function sendEmail() {
     const mailOptions = {
         from: 'ricardo.landinez@estupendo.com.co',
         to: 'ismary.lara@estupendo.com.co', // Cambia el correo de destino
-      //cc: 'correo.en.copia@example.com', 
-        bcc: 'soporte.stupendo@estupendo.com.co',
+        cc: 'soporte.stupendo@estupendo.com.co', 
+        //bcc: 'soporte.stupendo@estupendo.com.co',
         subject: 'Reporte documentos emitidos y autorizados por el grupo Bodytech',
         html: `
         Buen día estimado equipo de Estupendo,<br><br>
