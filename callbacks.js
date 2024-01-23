@@ -308,7 +308,51 @@ const adquirentesSinEventos = (data) => {
 
 }
 
-export { generarAutorizados, generarEventos, generarNomina, generarRecepcion, generarRechazados, generarRecepcionPerenco, formatHistorial, generarEmpresasBodytech,adquirentesSinEventos };
+
+//Clientes que tienen negocios con Estupendo
+const generarClientesEstupendo = (data) => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Reporte');
+
+
+    worksheet.addRow(['Razón Social', 'NIT', 'Roles', 'Correo electronico', 'Ciudad', 'Telefono', 'Direccion']);
+
+
+    data= data.map(document => {
+        return {
+            Razon_social : document.nombre_identificacion,
+            Identificacion: document.identificacion,
+            Roles: document.roles,
+            Email:  document.email,
+            Ciudad: document.municipio,
+            Telefono:  document.telefono,
+            Direccion:  document.dir_matriz,
+        }
+    }).forEach(item => {
+        worksheet.addRow([
+            item.Razon_social, 
+            item.Identificacion, 
+            item.Roles, 
+            item.Email,
+            item.Ciudad,
+            item.Telefono,
+            item.Direccion
+        ]);
+    });
+
+
+    const filename = 'Reporte_Empresas_Estupendo.xlsx';
+    workbook.xlsx.writeFile(filename)
+        .then(() => {
+            console.log(`Reporte generado exitosamente en ${filename}`);
+        })
+        .catch(error => {
+            console.error('Error al generar el reporte:', error);
+        });
+
+}
+
+export { generarAutorizados, generarEventos, generarNomina, generarRecepcion, generarRechazados, generarRecepcionPerenco, formatHistorial, generarEmpresasBodytech,adquirentesSinEventos, generarClientesEstupendo };
 
 
 

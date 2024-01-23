@@ -8,7 +8,7 @@ function sendEmail() {
         service: 'Gmail',
         auth: {
             user: 'ricardo.landinez@estupendo.com.co',
-            pass: 'Terry040804'
+            pass: 'wgkpsyjbptcdnjom'
         }
     });
 
@@ -38,7 +38,7 @@ function sendEmail() {
     const mailOptions = {
         from: 'ricardo.landinez@estupendo.com.co',
         to: 'ismary.lara@estupendo.com.co', // Cambia el correo de destino
-        cc: 'soporte.stupendo@estupendo.com.co', 
+        cc: 'soporte.stupendo@estupendo.com.co,ricardo.landinez@estupendo.com.co', 
         //bcc: 'soporte.stupendo@estupendo.com.co',
         subject: 'Reporte documentos emitidos y autorizados por el grupo Bodytech',
         html: `
