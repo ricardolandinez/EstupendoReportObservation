@@ -8,7 +8,7 @@ function sendEmail() {
         service: 'Gmail',
         auth: {
             user: 'ricardo.landinez@estupendo.com.co',
-            pass: 'wgkpsyjbptcdnjom'
+            pass: 'ghpngkoozndidhmh'
         }
     });
 

@@ -254,12 +254,16 @@ const rechazados = [
 const recepcionadosPerencos = [
     {
         $match: {
-            receptor_id: "5dbc8b9571b6a1449071d053",
-            formaPago: "1",
+            receptor_id: "5d780d6900679c1ffc549f8e",
+            formaPago:"2",
+            "historial_wf.accion":{
+                $nin: ["evento031","evento032","evento033"]
+            },
+            
 
             created_at: {
                 $gte: new Date("2023-01-01T00:00:00-05:00"),
-                $lte: new Date("2023-11-14T23:59:59-05:00")
+                $lte: new Date("2023-12-31T23:59:59-05:00")
             }
         }
     },
@@ -602,8 +606,8 @@ const empresaBodytech = [
         $match: {
             estado: 2,
             created_at: {
-                $gte: new Date("2024-01-01T00:00:00-05:00"),
-                $lte: new Date("2024-01-15T23:59:59-05:00")
+                $gte: new Date("2024-02-21T00:00:00-05:00"),
+                $lte: new Date("2024-02-21T23:59:59-05:00")
             }
         }
     },
@@ -795,8 +799,8 @@ const bolsaConjuntoFalse = [
 // generarReporte(recepcion, "documentos_rec", generarRecepcion)
 // generarReporte(rechazados, "documentos", generarRechazados)
 
-// generarReporte(recepcionadosPerencos, "documentos_rec", generarRecepcionPerenco)
-generarReporte(empresaBodytech, "documentos", generarEmpresasBodytech)
+//generarReporte(recepcionadosPerencos, "documentos_rec", generarRecepcionPerenco)
+ generarReporte(empresaBodytech, "documentos", generarEmpresasBodytech)
 // generarReporte(adquirenteNoEventos, "documentos", adquirentesSinEventos )
 
 // generarReporte(clientesEstupendo, "clientes", generarClientesEstupendo)
